@@ -37,6 +37,7 @@ unsigned long lastUpdate = 0; // Keep track of last update time
 // WiFi connected.
 int led = 13;
 bool lastLED = LOW;
+bool sendError = false;
 
 void setup()
 {
@@ -81,9 +82,15 @@ void loop()
   {
     Serial.print("Sending update...");
     if (sendData())
+    {
+      sendError = false;
       Serial.println("SUCCESS!");
+    }
     else
+    {
+      sendError = true; 
       Serial.println("Failed :(");
+    }
     lastUpdate = millis();
   }
   
@@ -93,7 +100,26 @@ void loop()
   Serial.print("Hum: "); Serial.println(humidityVal);
   Serial.print("Tmp: "); Serial.println(tempVal);
   
+  alertSendError();
   delay(2000);
+}
+
+void alertSendError()
+{
+ if (sendError) {
+   digitalWrite(led, HIGH);
+   delay(100);
+   digitalWrite(led, LOW);
+   delay(100);
+   digitalWrite(led, HIGH);
+   delay(100);
+   digitalWrite(led, LOW);
+   delay(100);
+   digitalWrite(led, HIGH);
+   delay(100);
+   digitalWrite(led, LOW);
+   delay(100);
+ } 
 }
 
 // sendData() makes use of the PHANT LIBRARY to send data to the
